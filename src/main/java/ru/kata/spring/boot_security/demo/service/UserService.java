@@ -54,13 +54,10 @@ public class UserService implements UserDetailsService {
         return false;
     }
 
+
     public User findById(Long id) {
-        User user = null;
-        Optional<User> optional = userRepository.findById(id);
-        if (optional.isPresent()) {
-            user = optional.get();
-        }
-        return user;
+        Optional<User> userFromDB = userRepository.findById(id);
+        return userFromDB.orElse(new User());
     }
 
 
@@ -78,5 +75,9 @@ public class UserService implements UserDetailsService {
         }
         return new org.springframework.security.core.userdetails.User(user.getUsername(),
                 user.getPassword(), user.getAuthorities());
+    }
+
+    public void update(User user) {
+        
     }
 }

@@ -6,7 +6,12 @@
     <title>Update User</title>
 </head>
 <body>
-<form action="#" th:action="@{/user-update}" th:object="${user}" method="POST">
+<div>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+</div>
+<form action="#" th:action="@{/admin/user-update}" th:object="${user}" method="POST">
     <label for="id">ID</label>
     <input readonly type="number" th:field="*{id}" id="id" placeholder="Id"></input>
     </br>
@@ -17,7 +22,7 @@
     <input type="text" th:field="*{password}" id="password" placeholder="Password"></input>
     </br>
     <label for="roles">Roles</label>
-    <input type="text" th:field="*{roles}" id="roles" placeholder="Roles"></input>
+    <input type="text" th:field="*{roles}" id="roles" placeholder="Password"></input>
     </br>
     <label for="name">Name</label>
     <input type="text" th:field="*{name}" id="name" placeholder="Name"></input>

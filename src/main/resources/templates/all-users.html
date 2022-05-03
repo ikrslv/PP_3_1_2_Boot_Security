@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html  xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,11 @@
 </head>
 
 <body>
+<div>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+</div>
 <div th:switch="${users}">
     <h2 th:case="null">No users found!</h2>
     <div th:case="*">
@@ -32,7 +37,7 @@
                 <td th:utext="${user.getSurname()}">Surname</td>
                 <td th:utext="${user.getAge()}">Age</td>
                 <td th:utext="${user.getPassword()}">Password</td>
-                <td><span th:each="role : ${user.getRoles()}" th:utext="${role.getName()} + ';'" > </span></td>
+                <td><span th:each="role : ${user.getRoles()}" th:utext="${role.getName()} + ';'"> </span></td>
                 <td>
                     <a th:href="@{user-update/{id}(id=${user.getId()})}">Update</a>
                     <br>

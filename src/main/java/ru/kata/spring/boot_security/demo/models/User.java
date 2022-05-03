@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -35,6 +36,16 @@ public class User implements UserDetails {
     private Set<Role> roles;
 
     public User() {
+    }
+
+    public User(Long id, String username, String name, String surname, int age, String password, Set<Role> roles) {
+        this.id = id;
+        this.username = username;
+        this.name = name;
+        this.surname = surname;
+        this.age = age;
+        this.password = password;
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -113,7 +124,5 @@ public class User implements UserDetails {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
+    public void setRoles(Set<Role> roles) { this.roles = roles; }
 }
