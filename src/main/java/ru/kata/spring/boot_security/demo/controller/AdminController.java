@@ -10,8 +10,6 @@ import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
-import java.security.Principal;
-
 
 @Controller
 public class AdminController {
@@ -30,14 +28,6 @@ public class AdminController {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    //Страница с ролью доступа ROLE_USER:
-    @GetMapping("/user")
-    public String showUserInfo(Principal principal, Model model) {
-        User user = userService.findByUsername(principal.getName());
-        model.addAttribute("user", user);
-        return "user";
-    }
-
     //Страница с ролью доступа ROLE_ADMIN:
     @GetMapping("/admin/users")
     public String showAllUsers(Model model) {
@@ -50,12 +40,15 @@ public class AdminController {
     public String createUserForm(Model model) {
         User user = new User();
         model.addAttribute("user", user);
+        model.addAttribute("roles", roleService.getAllRoles());
         return "user-create";
     }
 
     //Сервис для создания User
     @PostMapping("/admin/user-create")
-    public String addNewUser(@ModelAttribute("user") User user) {
+    public String addNewUser(@ModelAttribute("user") User user,
+                             @RequestParam("rolesList") String roles) {
+        user.setRoles(roleService.getRole(roles));
         userService.saveUser(user);
         return "redirect:/admin/users";
     }
@@ -78,7 +71,7 @@ public class AdminController {
 
     @PostMapping("/admin/user-update/{id}")
     public String updateUser(@ModelAttribute("user") User user, @PathVariable("id") Long id,
-                             @RequestParam(value = "rolesList", required = false) String roles){
+                             @RequestParam(value = "rolesList", required = false) String roles) {
         user.setRoles(roleService.getRole(roles));
         userService.updateUser(user);
         return "redirect:/admin/users";

@@ -6,11 +6,6 @@
     <title>Update User</title>
 </head>
 <body>
-<div>
-    <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Sign Out"/>
-    </form>
-</div>
 <form action="#" th:action="@{/admin/user-update/{id}(id=${user.getId()})}" th:object="${user}" method="POST">
     <label for="id">ID</label>
     <input readonly type="number" th:field="*{id}" id="id" placeholder="Id"></input>
@@ -30,7 +25,7 @@
     <label for="age">Age</label>
     <input type="text" th:field="*{age}" id="age" placeholder="Age"></input>
     </br>
-    <label for="roles">Choose roles:</label>
+    <label for="roles">Chose roles:</label>
     <select name="rolesList" id="roles" multiple size="2">
         <option th:each="role : ${roles}"
                 th:value="${role.name}"
@@ -40,5 +35,11 @@
     </br>
     <input type="submit" value="Update User">
 </form>
+</br>
+<div>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+</div>
 </body>
 </html>
