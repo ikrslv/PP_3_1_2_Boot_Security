@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -13,7 +14,7 @@ import java.security.Principal;
 
 
 @Controller
-public class UserController {
+public class AdminController {
 
     private final UserService userService;
 
@@ -22,14 +23,14 @@ public class UserController {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserController(UserService userService, RoleService roleService,
+    public AdminController(UserService userService, RoleService roleService,
                            BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userService = userService;
         this.roleService = roleService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    //РЎС‚СЂР°РЅРёС†Р° СЃ СЂРѕР»СЊСЋ РґРѕСЃС‚СѓРїР° ROLE_USER:
+    //Страница с ролью доступа ROLE_USER:
     @GetMapping("/user")
     public String showUserInfo(Principal principal, Model model) {
         User user = userService.findByUsername(principal.getName());
@@ -37,14 +38,14 @@ public class UserController {
         return "user";
     }
 
-    //РЎС‚СЂР°РЅРёС†Р° СЃ СЂРѕР»СЊСЋ РґРѕСЃС‚СѓРїР° ROLE_ADMIN:
+    //Страница с ролью доступа ROLE_ADMIN:
     @GetMapping("/admin/users")
     public String showAllUsers(Model model) {
         model.addAttribute("users", userService.getAllUsers());
         return "all-users";
     }
 
-    //РЎСЃС‹Р»РєР° РЅР° С„РѕСЂРјСѓ РґР»СЏ СЃРѕР·РґР°РЅРёСЏ User СЃ СЂРѕР»СЊСЋ РґРѕСЃС‚СѓРїР° ROLE_ADMIN
+    //Ссылка на форму для создания User с ролью доступа ROLE_ADMIN
     @GetMapping("/admin/user-create")
     public String createUserForm(Model model) {
         User user = new User();
@@ -52,14 +53,14 @@ public class UserController {
         return "user-create";
     }
 
-    //РЎРµСЂРІРёСЃ РґР»СЏ СЃРѕР·РґР°РЅРёСЏ User
+    //Сервис для создания User
     @PostMapping("/admin/user-create")
     public String addNewUser(@ModelAttribute("user") User user) {
         userService.saveUser(user);
         return "redirect:/admin/users";
     }
 
-    //РЈРґР°Р»РµРЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР· Р‘Р”
+    //Удаление пользователя из БД
     @GetMapping("/admin/user-delete/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
         userService.deleteById(id);

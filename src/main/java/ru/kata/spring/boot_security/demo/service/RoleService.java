@@ -22,7 +22,7 @@ public class RoleService {
         return new HashSet<Role>(roleRepository.findAll());
     }
 
-    public Role getRole(String role) {
+    public Set<Role> getRole(String role) {
         return roleRepository.findByName(role);
     }
 }
