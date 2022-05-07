@@ -17,17 +17,17 @@ public class User implements UserDetails {
     @Column(name = "Id")
     private Long id;
 
-    @Column(name = "Username", unique = true)
-    private String username;
+    @Column(name = "First_Name")
+    private String firstName;
 
-    @Column(name = "Name")
-    private String name;
-
-    @Column(name = "Surname")
-    private String surname;
+    @Column(name = "Last_Name")
+    private String lastName;
 
     @Column(name = "Age")
     private int age;
+
+    @Column(name = "Email", unique = true)
+    private String email;
 
     @Column(name = "Password")
     private String password;
@@ -38,12 +38,12 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(Long id, String username, String name, String surname, int age, String password, Set<Role> roles) {
+    public User(Long id, String firstName, String lastName, int age, String email, String password, Set<Role> roles) {
         this.id = id;
-        this.username = username;
-        this.name = name;
-        this.surname = surname;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.age = age;
+        this.email = email;
         this.password = password;
         this.roles = roles;
     }
@@ -56,58 +56,20 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
+    public String getFirstName() {
+        return firstName;
     }
 
-    @Override
-    public String getPassword() {
-        return password;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getUsername() {
-        return username;
+    public String getLastName() {
+        return lastName;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public int getAge() {
@@ -118,11 +80,58 @@ public class User implements UserDetails {
         this.age = age;
     }
 
-    public void setPassword(String password){ this.password = password; }
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) { this.roles = roles; }
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRoles();
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

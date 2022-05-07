@@ -3,29 +3,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Update User</title>
+    <title>Edit User</title>
 </head>
 <body>
-<form action="#" th:action="@{/admin/user-update/{id}(id=${user.getId()})}" th:object="${user}" method="POST">
+<form th:action="@{/admin/{id}(id=${user.getId()})}" th:object="${user}" method="POST">
     <label for="id">ID</label>
     <input readonly type="number" th:field="*{id}" id="id" placeholder="Id"></input>
     </br>
-    <label for="username">Username</label>
-    <input type="text" th:field="*{username}" id="username" placeholder="Username"></input>
+    <label for="firstName">First name</label>
+    <input type="text" th:field="*{firstName}" id="firstName" placeholder="First name"></input>
     </br>
-    <label for="password">Password</label>
-    <input type="text" th:field="*{password}" id="password" placeholder="Password"></input>
-    </br>
-    <label for="name">Name</label>
-    <input type="text" th:field="*{name}" id="name" placeholder="Name"></input>
-    </br>
-    <label for="surname">Surname</label>
-    <input type="text" th:field="*{surname}" id="surname" placeholder="Surname"></input>
+    <label for="lastName">Last name</label>
+    <input type="text" th:field="*{lastName}" id="lastName" placeholder="Last name"></input>
     </br>
     <label for="age">Age</label>
     <input type="text" th:field="*{age}" id="age" placeholder="Age"></input>
     </br>
-    <label for="roles">Chose roles:</label>
+    <label for="email">Email</label>
+    <input type="text" th:field="*{email}" id="email" placeholder="Email"></input>
+    </br>
+    <label for="password">Password</label>
+    <input type="text"  id="password" placeholder="Password"></input>
+    </br>
+    <label for="roles">Role</label>
     <select name="rolesList" id="roles" multiple size="2">
         <option th:each="role : ${roles}"
                 th:value="${role.name}"
@@ -33,7 +33,7 @@
         </option>
     </select>
     </br>
-    <input type="submit" value="Update User">
+    <input type="submit" value="Edit User">
 </form>
 </br>
 <div>

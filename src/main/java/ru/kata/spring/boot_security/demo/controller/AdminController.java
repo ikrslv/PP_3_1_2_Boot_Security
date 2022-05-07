@@ -12,6 +12,7 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 
 
 @Controller
+@RequestMapping("/admin")
 public class AdminController {
 
     private final UserService userService;
@@ -29,52 +30,52 @@ public class AdminController {
     }
 
     //Страница с ролью доступа ROLE_ADMIN:
-    @GetMapping("/admin/users")
+    @GetMapping()
     public String showAllUsers(Model model) {
         model.addAttribute("users", userService.getAllUsers());
         return "all-users";
     }
 
     //Ссылка на форму для создания User с ролью доступа ROLE_ADMIN
-    @GetMapping("/admin/user-create")
+    @GetMapping("/new")
     public String createUserForm(Model model) {
         User user = new User();
         model.addAttribute("user", user);
         model.addAttribute("roles", roleService.getAllRoles());
-        return "user-create";
+        return "new";
     }
 
     //Сервис для создания User
-    @PostMapping("/admin/user-create")
+    @PostMapping()
     public String addNewUser(@ModelAttribute("user") User user,
                              @RequestParam("rolesList") String roles) {
         user.setRoles(roleService.getRole(roles));
         userService.saveUser(user);
-        return "redirect:/admin/users";
+        return "redirect:/admin";
     }
 
     //Удаление пользователя из БД
-    @GetMapping("/admin/user-delete/{id}")
+    @GetMapping("/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
         userService.deleteById(id);
-        return "redirect:/admin/users";
+        return "redirect:/admin";
     }
 
 
-    @GetMapping("/admin/user-update/{id}")
+    @GetMapping("/edit/{id}")
     public String updateUserForm(@PathVariable Long id, Model model) {
         User user = userService.findById(id);
         model.addAttribute("user", user);
         model.addAttribute("roles", roleService.getAllRoles());
-        return "user-update";
+        return "edit";
     }
 
-    @PostMapping("/admin/user-update/{id}")
+    @PostMapping("/{id}")
     public String updateUser(@ModelAttribute("user") User user, @PathVariable("id") Long id,
                              @RequestParam(value = "rolesList", required = false) String roles) {
         user.setRoles(roleService.getRole(roles));
         userService.updateUser(user);
-        return "redirect:/admin/users";
+        return "redirect:/admin";
     }
 
 }
