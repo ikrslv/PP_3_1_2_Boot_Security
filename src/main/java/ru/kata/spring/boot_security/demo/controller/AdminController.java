@@ -10,6 +10,8 @@ import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
+import java.security.Principal;
+
 
 @Controller
 @RequestMapping("/admin")
@@ -31,9 +33,11 @@ public class AdminController {
 
     //Страница с ролью доступа ROLE_ADMIN:
     @GetMapping()
-    public String showAllUsers(Model model) {
+    public String showAllUsers(Model model, Principal principal) {
+        User user = userService.findByEmail(principal.getName());
         model.addAttribute("users", userService.getAllUsers());
-        return "all-users";
+        model.addAttribute("user", user);
+        return "admin";
     }
 
     //Ссылка на форму для создания User с ролью доступа ROLE_ADMIN
