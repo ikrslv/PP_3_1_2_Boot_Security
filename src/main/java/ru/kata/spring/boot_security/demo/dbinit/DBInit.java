@@ -10,6 +10,7 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.annotation.PostConstruct;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,21 +34,21 @@ public class DBInit {
     @PostConstruct
     private void initDB() {
         Set<Role> rolesList = new HashSet<>();
-        Role role1 = new Role(1L, "ROLE_ADMIN");
-        Role role2 = new Role(2L, "ROLE_USER");
+        Role role1 = new Role(1L, "ROLE_USER");
+        Role role2 = new Role(2L, "ROLE_ADMIN");
         rolesList.add(role1);
         rolesList.add(role2);
         //password: user1
         User user1 = new User(1L, "User1", "Userovich1", 29, "user1@mail.ru"
-                , "$2a$12$4srOVnNE1AM28N2dJJIIz.tvtHGOvRWgA9hBuOsfGeVJL7URvM/gm"
-                , roleRepository.findByName("ROLE_ADMIN"));
+                , "user1");
         //password: user2
         User user2 = new User(2L, "User2", "Userovich2", 23,  "user2@mail.ru"
-                ,"$2a$12$38L738ieITbjhF8gDfS4cOCFkvGBvW4iabEZ.T6XR/LGaIj.PNpEO"
-                , roleRepository.findByName("ROLE_USER"));
+                ,"user2");
+        user1.setRoles(Collections.singleton(role2));
+        user2.setRoles(Collections.singleton(role1));
         roleRepository.save(role1);
         roleRepository.save(role2);
-        userRepository.save(user1);
-        userRepository.save(user2);
+        userService.saveUser(user1);
+        userService.saveUser(user2);
     }
 }
