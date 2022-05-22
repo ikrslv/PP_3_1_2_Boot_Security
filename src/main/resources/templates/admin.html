@@ -60,7 +60,7 @@
                         <a class="nav-link active" data-toggle="tab" href="#users_table">Users table</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#new_user">New user</a>
+                        <a class="nav-link" data-toggle="tab" href="#newUser">New user</a>
                     </li>
                 </ul>
 
@@ -84,30 +84,8 @@
                                         <th>Delete</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
-                                    <tr th:each="user : ${users}">
-                                        <td th:utext="${user.getId()}">Id</td>
-                                        <td th:utext="${user.getFirstName()}">First Name</td>
-                                        <td th:utext="${user.getLastName()}">Last Name</td>
-                                        <td th:utext="${user.getAge()}">Age</td>
-                                        <td th:utext="${user.getUsername()}">Email</td>
-                                        <td><span th:each="role : ${user.getRoles()}"
-                                                  th:utext="${role.getName()} + '; '"> </span></td>
-                                        <!--                Edit -->
-                                        <td>
-                                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                    th:attr="data-target=${'#editModal'+ user.id}" data-whatever="@mdo">
-                                                Edit
-                                            </button>
-                                        </td>
-                                        <!--                Delete -->
-                                        <td>
-                                            <button type="button" class="btn btn-danger" data-toggle="modal"
-                                                    th:attr="data-target=${'#deleteModal'+ user.id}"
-                                                    data-whatever="@mdo">
-                                                Delete
-                                            </button>
-                                    </tr>
+                                    <tbody id="usersTable">
+                                    <!-- insert from js file -->
                                     </tbody>
                                 </table>
                             </div>
@@ -115,9 +93,9 @@
                     </div>
 
                     <!-- new User -->
-                    <div class="tab-pane fade" id="new_user">
+                    <div class="tab-pane fade" id="newUser">
                         <div class="card">
-                            <form th:action="@{/admin}" th:method="POST">
+                            <form>
                                 <div class="bg-light"><h2>Add new user</h2></div>
                                 <div class="text-center  font-weight-bold"
                                      style="margin-left:400px; margin-right:400px; margin-bottom:20px;">
@@ -151,21 +129,21 @@
                                         <input type="text" class="form-control" id="password" name="password"
                                                placeholder="Enter password">
                                     </div>
-
+                                    <!-- selectedOptions from js file -->
                                     <div class="form-group">
                                         <label for="roles">Role</label>
                                         <select name="rolesList" id="roles" multiple size="2">
-                                            <option th:each="role : ${roles}"
-                                                    th:value="${role.name}"
-                                                    th:text="${role.getName()}">
-                                            </option>
+
                                         </select>
                                     </div>
-                                    <input type="button" class="btn btn-success" value="Add User">
+                                    <button type="submit" class="btn btn-success" id="newUserButton">
+                                        Add new User
+                                    </button>
                                 </div>
                             </form>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -247,11 +225,11 @@
 </div>
 
 <!-- Модальное окно delete -->
-<div class="modal fade" th:each="user : ${users}" th:attr="id=${'deleteModal' + user.id}" tabindex="-1" role="dialog"
-     aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="deleteModalLabel" aria-hidden="true" id="deleteModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form th:action="@{/admin/delete/{id}(id=${user.getId()})}" th:object="${user}" th:method="POST">
+            <form >
                 <div class="modal-header">
                     <h5 class="modal-title" id="deleteModalLabel">Delete user</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -264,31 +242,30 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="deleteId" class="col-form-label">ID</label>
-                            <input class="form-control" readonly type="text" th:value="${user.getId()}" id="deleteId"
+                            <input class="form-control" readonly type="text" id="deleteId"
                                    name="id">
                         </div>
                         <div class="form-group">
                             <label for="deleteFirstName" class="col-form-label">First name</label>
-                            <input class="form-control" readonly type="text" th:value="${user.getFirstName()}"
+                            <input class="form-control" readonly type="text"
                                    id="deleteFirstName" name="firstName"></input>
                         </div>
 
                         <div class="form-group">
                             <label for="deleteLastName" class="col-form-label">Last name</label>
-                            <input class="form-control" readonly type="text" th:value="${user.getLastName()}"
+                            <input class="form-control" readonly type="text"
                                    id="deleteLastName" name="lastName">
                         </div>
 
                         <div class="form-group">
                             <label for="deleteAge" class="col-form-label">Age</label>
-                            <input class="form-control" readonly type="number" th:value="${user.getAge()}"
-                                   id="deleteAge"
-                                   name="age">
+                            <input class="form-control" readonly type="number"
+                                   id="deleteAge" name="age">
                         </div>
 
                         <div class="form-group">
                             <label for="deleteEmail" class="col-form-label">Email</label>
-                            <input class="form-control" readonly type="text" th:value="${user.getUsername()}"
+                            <input class="form-control" readonly type="text"
                                    id="deleteEmail" name="email">
                         </div>
 
@@ -296,18 +273,15 @@
                             <label for="deleteRole" class="col-form-label">Role</label>
                             <select class="form-control" name="rolesList" id="deleteRole" multiple
                                     size="2">
-                                <option disabled select
-                                        th:each="role : ${roles}"
-                                        th:value="${role.name}"
-                                        th:text="${role.getName()}">
-                                </option>
+
                             </select>
                         </div>
 
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                    >Close</button>
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </div>
             </form>
@@ -315,6 +289,7 @@
     </div>
 </div>
 
+<script th:src="@{/admin.js}"></script>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
