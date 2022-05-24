@@ -1,37 +1,63 @@
 const urlUsers = 'http://localhost:8080/api/admin';
-const urlRoles = 'http://localhost:8080/api/roles'
-
+const urlRoles = 'http://localhost:8080/api/roles';
+const urlLogin = 'http://localhost:8080/api/loginInfo'
 //For users table
-const tableUsers = document.getElementById('usersTable');
-
+const tableUsers = document.querySelector('tbody');
+const usersTable = document.querySelector('#navTab a:first-child');
+const newUsersTable = bootstrap.Tab.getOrCreateInstance(usersTable);
+const infoEmail = document.getElementById('infoEmail')
+const infoRoles = document.getElementById('infoRoles')
 
 //For adding new user
-const addNewUser = document.getElementById('newUserButton');
-
-const firstNameNew = document.getElementById('firstName')
-const lastNameNew = document.getElementById('lastName')
-const ageNew = document.getElementById('age')
-const emailNew = document.getElementById('email')
-const passwordNew = document.getElementById('password')
-const rolesNew = document.getElementById('roles')
+const addNewUser = document.getElementById('newUser');
+const firstNameNew = document.getElementById('firstName');
+const lastNameNew = document.getElementById('lastName');
+const ageNew = document.getElementById('age');
+const emailNew = document.getElementById('email');
+const passwordNew = document.getElementById('password');
+const rolesNew = document.getElementById('roles');
 
 //For delete user
-let deleteModal = $('#deleteModal').modal()
-const deleteId = document.getElementById('deleteId')
-const deleteFirstName = document.getElementById('deleteFirstName')
-const deleteLastName = document.getElementById('deleteLastName')
-const deleteAge = document.getElementById('deleteAge')
-const deleteEmail = document.getElementById('deleteEmail')
-const deleteRoles = document.getElementById('deleteRole')
+const deleteModal = document.getElementById('deleteModal');
+const newDeleteModal = bootstrap.Modal.getOrCreateInstance(deleteModal);
+const deleteId = document.getElementById('deleteId');
+const deleteFirstName = document.getElementById('deleteFirstName');
+const deleteLastName = document.getElementById('deleteLastName');
+const deleteAge = document.getElementById('deleteAge');
+const deleteEmail = document.getElementById('deleteEmail');
+const deleteRoles = document.getElementById('deleteRole');
 
+//For edit user
+const editModal = document.getElementById('editModal');
+const newEditModal = bootstrap.Modal.getOrCreateInstance(editModal);
+const editId = document.getElementById('editId');
+const editFirstName = document.getElementById('editFirstName');
+const editLastName = document.getElementById('editLastName');
+const editAge = document.getElementById('editAge');
+const editEmail = document.getElementById('editEmail');
+const editPassword = document.getElementById('editPassword');
+const editRoles = document.getElementById('editRole');
 
-let result = '';
+//Info for identity row
+fetch(urlLogin)
+    .then(response => response.json())
+    .then(user => {
+        const loginInfoEmail = `${user.email}`
+        const loginInfoRoles = 'with roles ' + `${user.roles.map(role => role.name)}`
+        infoEmail.innerHTML = loginInfoEmail
+        infoRoles.innerHTML = loginInfoRoles
+    })
+
 
 
 //Insert data into users table
+let result = '';
 const allUsers = (users) => {
-    users.forEach(user => {
-        result += `
+    fetch(urlUsers)
+        .then(response => response.json())
+        .then(users => {
+            users.forEach(user => {
+                result += `
                     <tr>
                         <td>${user.id}</td>
                         <td>${user.firstName}</td>
@@ -39,48 +65,62 @@ const allUsers = (users) => {
                         <td>${user.age}</td>
                         <td>${user.email}</td>
                         <td>${user.roles.map(role => role.name)}</td>
-                        <td><button type="button" class="btn btn-primary" data-toggle="modal"
-                        >Edit</button></td>
-                        <td><button type="submit" class="deleteBtn btn btn-danger" data-toggle="modal"
-                        data-target="#deleteModal">Delete</button></td>
+                        <td><button type="button" class="editBtn btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#editModal">Edit</button></td>
+                        <td><button type="submit" class="deleteBtn btn btn-danger" data-bs-toggle="modal"
+                        data-bs-target="#deleteModal">Delete</button></td>
                     </tr>`
-    })
-    tableUsers.innerHTML = result
-}
-
-
-//GET: all users
-function showAllUsers() {
-    fetch(urlUsers)
-        .then(response => response.json())
-        .then(data => allUsers(data))
-}
-
-showAllUsers()
-
-//GET: insert all roles into form of html file in users table (roles field)
-function showAllRoles() {
-    fetch(urlRoles)
-        .then(response => response.json())
-        .then(roles => {
-            roles.forEach(role => {
-                rolesNew.append(new Option(role.name, role.id))
             })
+            tableUsers.innerHTML = result
         })
 }
 
-showAllRoles()
 
-// POST: add new user
-addNewUser.addEventListener('click', (e) => {
-        e.preventDefault()
-        let rolesForm = document.getElementById('roles')
-        let selectedOptions = rolesForm.selectedOptions
-        let rolesArray = []
-        for (let i = 0; i < selectedOptions.length; i++) {
-            rolesArray.push({id: selectedOptions[i].value, name: selectedOptions[i].value})
+fetch(urlUsers)
+    .then(response => response.json())
+    .then(data => allUsers(data))
+    .catch(error => console.log(error))
+
+//GET: insert all roles into form of html file in users table (roles field)
+function getAllRoles(target) {
+    fetch(urlRoles)
+        .then(response => response.json())
+        .then(roles => {
+            let optionRoles = ``
+            roles.forEach(role => {
+                optionRoles += `<option value='${role.id}'>${role.name}</option>`
+            })
+            target.innerHTML = optionRoles
+        })
+}
+
+let roleArray = (options) => {
+    let array = []
+    for (let i = 0; i < options.length; i++) {
+        if (options[i].selected) {
+            let role = {id: options[i].value}
+            array.push(role)
         }
+    }
+    return array;
+}
 
+const reloadUsersTable = () => {
+    fetch(urlUsers)
+        .then(response => response.json())
+        .then(data => {
+            result = ''
+            allUsers(data)
+        })
+}
+
+//--------------------------------------------NEW_USER----------------------------------------------
+// POST: add new user
+getAllRoles(roles)
+addNewUser.addEventListener('submit', (e) => {
+        e.preventDefault()
+        let options = document.querySelector('#roles')
+        let setRoles = roleArray(options)
         fetch(urlUsers, {
             method: 'POST',
             headers: {
@@ -92,18 +132,22 @@ addNewUser.addEventListener('click', (e) => {
                 age: ageNew.value,
                 email: emailNew.value,
                 password: passwordNew.value,
-                roles: rolesArray,
+                roles: setRoles,
             })
         })
-            .then(response => response.json())
             .then(data => allUsers(data))
+            .catch(error => console.log(error))
+            .then(reloadUsersTable)
+        newUsersTable.show()
         firstNameNew.value = ''
         lastNameNew.value = ''
         ageNew.value = ''
         emailNew.value = ''
         passwordNew.value = ''
+        rolesNew.value = ''
     }
 )
+//--------------------------------------------NEW_USER----------------------------------------------
 
 const on = (element, event, selector, handler) => {
     element.addEventListener(event, e => {
@@ -113,12 +157,48 @@ const on = (element, event, selector, handler) => {
     })
 }
 
-on(document, 'click', '#editUser', e => {
-    console.log("edited")
+//--------------------------------------------EDIT--------------------------------------------------
+on(document, 'click', '.editBtn', e => {
+    let userData = e.target.parentNode.parentNode
+    id = userData.children[0].innerHTML
+    editId.value = userData.children[0].innerHTML
+    editFirstName.value = userData.children[1].innerHTML
+    editLastName.value = userData.children[2].innerHTML
+    editAge.value = userData.children[3].innerHTML
+    editEmail.value = userData.children[4].innerHTML
+    editPassword.value = ''
+    editRoles.value = getAllRoles(editRoles)
 })
 
 
-//                                              DELETE
+editModal.addEventListener('submit', e => {
+    e.preventDefault()
+    let options = document.querySelector('#editRole')
+    let setRoles = roleArray(options)
+    fetch(urlUsers, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: editId.value,
+            firstName: editFirstName.value,
+            lastName: editLastName.value,
+            age: editAge.value,
+            email: editEmail.value,
+            password: editPassword.value,
+            roles: setRoles
+        })
+    })
+        .then(data => allUsers(data))
+        .catch(error => console.log(error))
+        .then(reloadUsersTable)
+    newEditModal.hide()
+
+})
+//--------------------------------------------EDIT--------------------------------------------------
+
+//--------------------------------------------DELETE------------------------------------------------
 on(document, 'click', '.deleteBtn', e => {
     let userData = e.target.parentNode.parentNode
     id = userData.children[0].innerHTML
@@ -137,5 +217,7 @@ deleteModal.addEventListener('submit', (e) => {
     })
         .then(data => showAllUsers(data))
         .catch(error => console.log(error))
+        .then(reloadUsersTable)
+    newDeleteModal.hide()
 })
-
+//--------------------------------------------DELETE------------------------------------------------
