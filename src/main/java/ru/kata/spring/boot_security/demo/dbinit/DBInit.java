@@ -38,12 +38,12 @@ public class DBInit {
         Role role2 = new Role(2L, "ROLE_ADMIN");
         rolesList.add(role1);
         rolesList.add(role2);
-        //password: user1
+
         User user1 = new User(1L, "User1", "Userovich1", 29, "user1@mail.ru"
                 , "user1");
-        //password: user2
         User user2 = new User(2L, "User2", "Userovich2", 23,  "user2@mail.ru"
                 ,"user2");
+
         user1.setRoles(Collections.singleton(role2));
         user2.setRoles(Collections.singleton(role1));
         roleRepository.save(role1);
