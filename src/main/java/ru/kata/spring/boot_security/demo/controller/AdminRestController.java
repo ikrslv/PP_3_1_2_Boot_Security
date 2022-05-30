@@ -32,7 +32,7 @@ public class AdminRestController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping("roles")
+    @GetMapping("/roles")
     public ResponseEntity<Set<Role>> getAllRoles() {
         return new ResponseEntity<>(roleService.getAllRoles(), HttpStatus.OK);
     }

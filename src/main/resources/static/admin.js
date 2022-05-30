@@ -52,7 +52,7 @@ fetch(urlLogin)
 
 //Insert data into users table
 let result = '';
-const allUsers = (users) => {
+const allUsers = () => {
     fetch(urlUsers)
         .then(response => response.json())
         .then(users => {
@@ -138,7 +138,7 @@ addNewUser.addEventListener('submit', (e) => {
             .then(data => allUsers(data))
             .catch(error => console.log(error))
             .then(reloadUsersTable)
-        newUsersTable.show()
+        //newUsersTable.show()
         firstNameNew.value = ''
         lastNameNew.value = ''
         ageNew.value = ''
@@ -207,7 +207,7 @@ on(document, 'click', '.deleteBtn', e => {
     deleteLastName.value = userData.children[2].innerHTML
     deleteAge.value = userData.children[3].innerHTML
     deleteEmail.value = userData.children[4].innerHTML
-    deleteRoles.value = userData.children[5].innerHTML
+    deleteRoles.value = getAllRoles(deleteRoles)
 })
 
 deleteModal.addEventListener('submit', (e) => {
