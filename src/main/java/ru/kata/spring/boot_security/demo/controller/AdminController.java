@@ -14,7 +14,7 @@ import java.security.Principal;
 
 
 @Controller
-@RequestMapping("/admin")
+//@RequestMapping("/admin")
 public class AdminController {
 
     private final UserService userService;
@@ -32,7 +32,7 @@ public class AdminController {
     }
 
     //Страница с ролью доступа ROLE_ADMIN:
-    @GetMapping()
+    @GetMapping("/admin")
     public String showAllUsers(Model model, Principal principal) {
         User admin = userService.findByEmail(principal.getName());
         model.addAttribute("users", userService.getAllUsers());
@@ -53,7 +53,7 @@ public class AdminController {
      */
 
     //Сервис для создания User
-    @PostMapping()
+    @PostMapping("/admin")
     public String addNewUser(@ModelAttribute("user") User user,
                              @RequestParam("rolesList") String roles) {
         user.setRoles(roleService.getRole(roles));
@@ -62,14 +62,14 @@ public class AdminController {
     }
 
     //Удаление пользователя из БД
-    @PostMapping("/delete/{id}")
+    @PostMapping("/admin/delete/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
         userService.deleteById(id);
         return "redirect:/admin";
     }
 
 
-    @PostMapping("/edit/{id}")
+    @PostMapping("/admin/edit/{id}")
     public String updateUser(@ModelAttribute("user") User user, @PathVariable("id") Long id,
                              @RequestParam(value = "rolesList", required = false) String roles) {
         user.setRoles(roleService.getRole(roles));
